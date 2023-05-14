@@ -72,15 +72,8 @@ namespace dotnetAPI_Rubrica.Repository
                     query = query.Include(includeProperty);
                 }
             }
-            //whats the error here?
-
             return await query.FirstOrDefaultAsync();
         }
 
-
-        public Task SaveAsync()
-        {
-           return _db.SaveChangesAsync();
-        }
     }
 }

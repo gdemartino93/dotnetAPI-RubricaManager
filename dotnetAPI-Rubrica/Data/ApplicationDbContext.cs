@@ -14,6 +14,12 @@ namespace dotnetAPI_Rubrica.Data
         {
             
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //seed table contact with 5 contact

@@ -255,8 +255,59 @@ namespace dotnetAPI_Rubrica.Controllers.v1
                 return BadRequest(_response);
             }
         }
-        //create method to search contact with fullname
-
+        //CREATE METHOD to edit contact
+        [HttpPut("EditContact")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> EditContact([FromBody] ContactEditDTO dto)
+        {
+            try
+            {
+                if (!StaticData.Validation.IsValidEmail(dto.Email))
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.UnprocessableEntity;
+                    _response.ErrorMessage.Add("Email non valida");
+                    return BadRequest(_response);
+                }
+                if (!StaticData.Validation.IsValidTelephone(dto.TelephoneNumber))
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.UnprocessableEntity;
+                    _response.ErrorMessage.Add("Numero di telefono non valido");
+                    return BadRequest(_response);
+                }
+                if (dto is null)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.ErrorMessage.Add("Contatto non valido");
+                    return BadRequest(_response);
+                }
+                Contact contact = await _unitOfWork.Contacts.GetAsync(a => a.Id == dto.Id);
+                if (contact is null)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.ErrorMessage.Add("Contatto non trovato");
+                    return BadRequest(_response);
+                }
+                contact = _mapper.Map<Contact>(dto);
+                await _unitOfWork.Contacts.UpdateContact(contact);
+                //Errore nel salvataggio, da vedere come sistemare
+                _response.IsSuccess = true;
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = contact;
+                return Ok(_response);
+            }
+            catch (Exception)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.ErrorMessage.Add("Errore durante la modifica del contatto");
+                return BadRequest(_response);
+            }
+        }
 
     }
 }
