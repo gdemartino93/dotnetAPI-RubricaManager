@@ -93,5 +93,31 @@ namespace dotnetAPI_Rubrica.Controllers
             }
             return null;
         }
+
+        [HttpGet("GetAllUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAllUser()
+        {
+            try
+            {
+                var users = await _userRepository.GetAllUsers();
+                if (users is not null)
+                {
+                    _response.IsSuccess = true;
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.Result = users;
+                    return Ok(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.ErrorMessage.Add(ex.Message);
+                return BadRequest(_response);
+            }
+            return null;
+        }
     }
 }

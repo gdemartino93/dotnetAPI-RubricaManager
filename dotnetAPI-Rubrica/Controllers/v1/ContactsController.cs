@@ -23,6 +23,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
             try
             {
                 List<Contact> contacts = await _contactRepository.GetAllAsync();
+                //se il count è 0 allora restituisco un messaggio
                 _response.Result = contacts.Count == 0 ? "Nessun risultato" : contacts;
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;

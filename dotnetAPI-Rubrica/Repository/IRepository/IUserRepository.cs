@@ -1,4 +1,5 @@
-﻿using dotnetAPI_Rubrica.Models.DTO;
+﻿using dotnetAPI_Rubrica.Models;
+using dotnetAPI_Rubrica.Models.DTO;
 
 namespace dotnetAPI_Rubrica.Repository.IRepository
 {
@@ -9,6 +10,6 @@ namespace dotnetAPI_Rubrica.Repository.IRepository
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
         Task<UserDTO> Register(RegisterRequestDTO registerRequestDTO);
         bool IsValidEmail(string email);
-        
+        Task<List<UserDTO>> GetAllUsers();
     }
 }

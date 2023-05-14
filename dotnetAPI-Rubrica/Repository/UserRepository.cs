@@ -150,5 +150,11 @@ namespace dotnetAPI_Rubrica.Repository
             Regex regex = new Regex(pattern);
             return regex.IsMatch(email);
         }
+
+        public Task<List<UserDTO>> GetAllUsers()
+        {
+            var user = _dbContext.ApplicationUsers.ToList();
+            return Task.FromResult(_mapper.Map<List<UserDTO>>(user));
+        }
     }
 }
