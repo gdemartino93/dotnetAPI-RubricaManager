@@ -17,7 +17,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         private readonly IUnitOfWork _unitOfWork;
         private readonly APIResponse _response;
         private readonly IMapper _mapper;
-        public ContactsController(IUnitOfWork unitOfWork,IMapper mapper)
+        public ContactsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _response = new APIResponse();
@@ -26,10 +26,30 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         [HttpGet("GetContacts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> GetContacts(int pageSize = 3, int currentPage = 1)
+        public async Task<ActionResult<APIResponse>> GetContacts(string? term,int pageSize = 3, int currentPage = 1)
         {
             try
             {
+                List<Contact> contactFiltered;
+                if (!string.IsNullOrEmpty(term))
+                {
+                    contactFiltered = await _unitOfWork.Contacts.GetAllAsync(c => c.Name.Contains(term) || c.Email.Contains(term) || c.Lastname.Contains(term));
+                    if(contactFiltered.Count > 0)
+                    {
+                        _response.Result = contactFiltered;
+                        _response.StatusCode = HttpStatusCode.OK;
+                        _response.IsSuccess = true;
+                        return Ok(_response);
+                    }
+                    else
+                    {
+                        contactFiltered = await _unitOfWork.Contacts.GetAllAsync();
+                        _response.Result = contactFiltered;
+                        _response.StatusCode = HttpStatusCode.OK;
+                        _response.IsSuccess = true;
+                        return Ok(_response);
+                    }
+                }
                 //recupero tutti i contatti in modo da poterli contare e calcolare il numero di pagine totali
                 List<Contact> allContacts = await _unitOfWork.Contacts.GetAllAsync();
                 //calcolo il numero di pagine totali in base agli elementi totali e la dimensione della pagina arrotondando per eccesso
@@ -39,7 +59,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
                 //aggiungo la pagina corrente alla risposta api in modo da poter essere consumato nel fe
                 _response.CurrentPage = currentPage;
 
-               List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync(pageSize:pageSize,currentPage:currentPage);
+                List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync(pageSize: pageSize, currentPage: currentPage);
 
                 _response.Result = contacts.Count == 0 ? "Nessun risultato" : contacts;
                 _response.StatusCode = HttpStatusCode.OK;
@@ -84,39 +104,39 @@ namespace dotnetAPI_Rubrica.Controllers.v1
 
 
         [HttpPost("CreateContact")]
-        public async Task<ActionResult<APIResponse>> CreateContact([FromBody]ContactCreateDTO dto)
+        public async Task<ActionResult<APIResponse>> CreateContact([FromBody] ContactCreateDTO dto)
         {
             try
             {
-                if(!StaticData.Validation.IsValidEmail(dto.Email))
+                if (!StaticData.Validation.IsValidEmail(dto.Email))
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.UnprocessableEntity;
                     _response.ErrorMessage.Add("Email non valida");
                     return BadRequest(_response);
                 }
-                if(!StaticData.Validation.IsValidTelephone(dto.TelephoneNumber))
+                if (!StaticData.Validation.IsValidTelephone(dto.TelephoneNumber))
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.UnprocessableEntity;
                     _response.ErrorMessage.Add("Numero di telefono non valido");
                     return BadRequest(_response);
                 }
-                if(dto.Id is not 0)
+                if (dto.Id is not 0)
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.Unauthorized;
                     _response.ErrorMessage.Add("Esiste già un contatto con questo ID.");
                     return BadRequest(_response);
                 }
-                if(dto is null)
+                if (dto is null)
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.ErrorMessage.Add("Contatto non valido");
                     return BadRequest(_response);
                 }
-               Contact newContact = _mapper.Map<Contact>(dto);
+                Contact newContact = _mapper.Map<Contact>(dto);
                 await _unitOfWork.Contacts.CreateAsync(newContact);
                 _response.IsSuccess = true;
                 _response.StatusCode = HttpStatusCode.Created;
@@ -138,7 +158,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         public async Task<ActionResult<APIResponse>> DeleteContact(int id)
         {
             Contact contact = await _unitOfWork.Contacts.GetAsync(a => a.Id == id);
-            if(contact is null)
+            if (contact is null)
             {
                 _response.IsSuccess = false;
                 _response.StatusCode = HttpStatusCode.BadRequest;
@@ -150,7 +170,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
             _response.StatusCode = HttpStatusCode.OK;
             _response.Result = "Contatto eliminato";
             return Ok(_response);
-            
+
 
         }
 
@@ -163,7 +183,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
             try
             {
                 Contact contact = await _unitOfWork.Contacts.GetAsync(a => a.Id == id);
-                if(contact is null)
+                if (contact is null)
                 {
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.BadRequest;
@@ -184,8 +204,55 @@ namespace dotnetAPI_Rubrica.Controllers.v1
             }
         }
 
-        [HttpGet("GetContact/{}")]
-        public async Task<ActionResult<APIResponse> 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("GetContactByTelephone/{telephoneNo}")]
+        public async Task<ActionResult<APIResponse>> GetContactByTelephone(string telephoneNo)
+        {
+            Contact contact = await _unitOfWork.Contacts.GetAsync(a => a.TelephoneNumber == telephoneNo);
+            if (contact is null)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.ErrorMessage.Add("Contatto non trovato");
+                return NotFound(_response);
+            }
+            _response.IsSuccess = true;
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.Result = contact;
+            return Ok(_response);
+        }
+        [HttpGet("GetContactsByUser/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<APIResponse>> GetContactsByUser(string userId)
+        {
+            try
+            {
+                List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync(u => u.UserId == userId);
+                if(contacts.Count == 0)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.ErrorMessage.Add("Contatti non trovati");
+                    return BadRequest(_response);
+                }
+                _response.IsSuccess=true;
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = contacts;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.ErrorMessage.Add(ex.Message);
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                return BadRequest(_response);
+            }
+        }
+        //create method to search contact with fullname
+
 
     }
 }
