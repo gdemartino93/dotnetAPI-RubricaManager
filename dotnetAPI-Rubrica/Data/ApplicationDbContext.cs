@@ -1,4 +1,5 @@
 ﻿using dotnetAPI_Rubrica.Models;
+using dotnetAPI_Rubrica.Models.DTO;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,5 +18,7 @@ namespace dotnetAPI_Rubrica.Data
         {
             base.OnModelCreating(builder);
         }
+        
+        
     }
 }
