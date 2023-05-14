@@ -26,6 +26,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         [HttpGet("GetContacts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ResponseCache(Duration = 30)]
         public async Task<ActionResult<APIResponse>> GetContacts(string? term,int pageSize = 3, int currentPage = 1)
         {
             try
@@ -77,6 +78,8 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         [HttpGet("GetContactsWithUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ResponseCache(Duration = 30)]
+
         public async Task<ActionResult<APIResponse>> GetContactsWithUser()
         {
             try
@@ -226,6 +229,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ResponseCache(Duration = 30)]
         public async Task<ActionResult<APIResponse>> GetContactsByUser(string userId)
         {
             try

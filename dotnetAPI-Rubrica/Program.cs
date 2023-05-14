@@ -22,9 +22,10 @@ namespace dotnetAPI_Rubrica
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("dbconnection"));
             });
-            //mapp override
+            //mapper override
             builder.Services.AddAutoMapper(typeof(MappingConfig));
-
+            //caching
+            builder.Services.AddResponseCaching();
             //auth
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
             //api versioning
