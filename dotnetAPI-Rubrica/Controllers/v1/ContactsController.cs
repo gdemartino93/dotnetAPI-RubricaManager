@@ -26,11 +26,20 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         [HttpGet("GetContacts")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<APIResponse>> GetContacts()
+        public async Task<ActionResult<APIResponse>> GetContacts(int pageSize = 3, int currentPage = 1)
         {
             try
             {
-               List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync();
+                List<Contact> allContacts = await _unitOfWork.Contacts.GetAllAsync();
+                //calcolo il numero di pagine totali in base agli elementi totali e la dimensione della pagina arrotondando per eccesso
+                int totalPage = (int)Math.Ceiling(allContacts.Count / (double)pageSize);
+                //aggiungo il numero di pagine totale alla risposta api in modo da poter essere consumato nel fe
+                _response.TotalPage = totalPage;
+                //aggiungo la pagina corrente alla risposta api in modo da poter essere consumato nel fe
+                _response.CurrentPage = currentPage;
+
+               List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync(pageSize:pageSize,currentPage:currentPage);
+
                 _response.Result = contacts.Count == 0 ? "Nessun risultato" : contacts;
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
@@ -136,5 +145,37 @@ namespace dotnetAPI_Rubrica.Controllers.v1
             
 
         }
+
+        [HttpGet("GetContact/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> GetContact(int id)
+        {
+            try
+            {
+                Contact contact = await _unitOfWork.Contacts.GetAsync(a => a.Id == id);
+                if(contact is null)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.ErrorMessage.Add("Contatto non trovato");
+                    return BadRequest(_response);
+                }
+                _response.IsSuccess = true;
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.Result = contact;
+                return Ok(_response);
+            }
+            catch (Exception)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.ErrorMessage.Add("Errore durante la ricerca del contatto");
+                return BadRequest(_response);
+            }
+        }   
+
+
     }
 }
