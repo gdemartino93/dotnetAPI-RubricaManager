@@ -30,6 +30,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         {
             try
             {
+                //recupero tutti i contatti in modo da poterli contare e calcolare il numero di pagine totali
                 List<Contact> allContacts = await _unitOfWork.Contacts.GetAllAsync();
                 //calcolo il numero di pagine totali in base agli elementi totali e la dimensione della pagina arrotondando per eccesso
                 int totalPage = (int)Math.Ceiling(allContacts.Count / (double)pageSize);
@@ -92,6 +93,13 @@ namespace dotnetAPI_Rubrica.Controllers.v1
                     _response.IsSuccess = false;
                     _response.StatusCode = HttpStatusCode.UnprocessableEntity;
                     _response.ErrorMessage.Add("Email non valida");
+                    return BadRequest(_response);
+                }
+                if(!StaticData.Validation.IsValidTelephone(dto.TelephoneNumber))
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.UnprocessableEntity;
+                    _response.ErrorMessage.Add("Numero di telefono non valido");
                     return BadRequest(_response);
                 }
                 if(dto.Id is not 0)
@@ -174,8 +182,10 @@ namespace dotnetAPI_Rubrica.Controllers.v1
                 _response.ErrorMessage.Add("Errore durante la ricerca del contatto");
                 return BadRequest(_response);
             }
-        }   
+        }
 
+        [HttpGet("GetContact/{}")]
+        public async Task<ActionResult<APIResponse> 
 
     }
 }

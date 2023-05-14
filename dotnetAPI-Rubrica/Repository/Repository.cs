@@ -80,7 +80,7 @@ namespace dotnetAPI_Rubrica.Repository
 
         public Task SaveAsync()
         {
-            throw new NotImplementedException();
+           return _db.SaveChangesAsync();
         }
     }
 }
