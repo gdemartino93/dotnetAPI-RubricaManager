@@ -114,6 +114,27 @@ namespace dotnetAPI_Rubrica.Controllers.v1
                 return BadRequest(_response);
             }
         }
-        
+
+        [HttpDelete("DeleteContact/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> DeleteContact(int id)
+        {
+            Contact contact = await _unitOfWork.Contacts.GetAsync(a => a.Id == id);
+            if(contact is null)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.ErrorMessage.Add("Contatto non trovato");
+                return BadRequest(_response);
+            }
+            await _unitOfWork.Contacts.DeleteAsync(contact);
+            _response.IsSuccess = true;
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.Result = "Contatto eliminato";
+            return Ok(_response);
+            
+
+        }
     }
 }
