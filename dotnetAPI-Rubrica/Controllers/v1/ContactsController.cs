@@ -3,6 +3,8 @@ using dotnetAPI_Rubrica.Models;
 using dotnetAPI_Rubrica.Models.DTO;
 using dotnetAPI_Rubrica.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel;
 using System.Net;
 
 namespace dotnetAPI_Rubrica.Controllers.v1
@@ -21,12 +23,35 @@ namespace dotnetAPI_Rubrica.Controllers.v1
             _response = new APIResponse();
             _mapper = mapper;
         }
-        [HttpGet]
-        public async Task<ActionResult<APIResponse>> GetAll()
+        [HttpGet("GetContacts")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> GetContacts()
         {
             try
             {
-                List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync();
+               List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync();
+                _response.Result = contacts.Count == 0 ? "Nessun risultato" : contacts;
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                return Ok(_response);
+            }
+            catch (Exception)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.ErrorMessage.Add("Errore durante la ricerca dei contatti");
+                return BadRequest(_response);
+            }
+        }
+        [HttpGet("GetContactsWithUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> GetContactsWithUser()
+        {
+            try
+            {
+                List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync(includeProperties: "User");
                 //se il count è 0 allora restituisco un messaggio
                 _response.Result = contacts.Count == 0 ? "Nessun risultato" : contacts;
                 _response.StatusCode = HttpStatusCode.OK;
@@ -42,11 +67,38 @@ namespace dotnetAPI_Rubrica.Controllers.v1
             }
 
         }
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+
+
         [HttpPost("CreateContact")]
         public async Task<ActionResult<APIResponse>> CreateContact([FromBody]ContactCreateDTO dto)
         {
             try
             {
+                if(!StaticData.Validation.IsValidEmail(dto.Email))
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.UnprocessableEntity;
+                    _response.ErrorMessage.Add("Email non valida");
+                    return BadRequest(_response);
+                }
+                if(dto.Id is not 0)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.Unauthorized;
+                    _response.ErrorMessage.Add("Esiste già un contatto con questo ID.");
+                    return BadRequest(_response);
+                }
+                if(dto is null)
+                {
+                    _response.IsSuccess = false;
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.ErrorMessage.Add("Contatto non valido");
+                    return BadRequest(_response);
+                }
                Contact newContact = _mapper.Map<Contact>(dto);
                 await _unitOfWork.Contacts.CreateAsync(newContact);
                 _response.IsSuccess = true;

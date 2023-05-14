@@ -6,7 +6,10 @@ using dotnetAPI_Rubrica.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -109,8 +112,6 @@ namespace dotnetAPI_Rubrica.Repository
             return null;
         }
 
-
-
         private string GenerateJwtToken(ApplicationUser user, string secretKey)
         {
             var roles = _userManager.GetRolesAsync(user).Result;
@@ -150,6 +151,7 @@ namespace dotnetAPI_Rubrica.Repository
             var users = await _dbContext.ApplicationUsers.ToListAsync();
             return _mapper.Map<List<UserDTO>>(users);
         }
+
 
 
     }
