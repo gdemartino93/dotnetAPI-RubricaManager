@@ -4,6 +4,7 @@ using dotnetAPI_Rubrica.Models.DTO;
 using dotnetAPI_Rubrica.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 
 namespace dotnetAPI_Rubrica.Controllers
@@ -55,7 +56,7 @@ namespace dotnetAPI_Rubrica.Controllers
                 _response.ErrorMessage.Add("Le password devono essere uguali");
                 return BadRequest(_response);
             }
-            if (!_userRepository.IsValidEmail(registerRequestDTO.Email))
+            if (!StaticData.Validation.IsValidEmail(registerRequestDTO.Email))
             {
                 _response.IsSuccess = false;
                 _response.StatusCode = HttpStatusCode.UnprocessableEntity;
@@ -94,30 +95,16 @@ namespace dotnetAPI_Rubrica.Controllers
             return null;
         }
 
-        [HttpGet("GetAllUser")]
+        //make function to get all users async
+        [HttpGet("GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAllUser()
+        public async Task<IActionResult> GetAllUsers()
         {
-            try
-            {
-                var users = await _userRepository.GetAllUsers();
-                if (users is not null)
-                {
-                    _response.IsSuccess = true;
-                    _response.StatusCode = HttpStatusCode.OK;
-                    _response.Result = users;
-                    return Ok(_response);
-                }
-            }
-            catch (Exception ex)
-            {
-                _response.IsSuccess = false;
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.ErrorMessage.Add(ex.Message);
-                return BadRequest(_response);
-            }
-            return null;
+             var users = await _userRepository.GetAllUsers();
+            _response.IsSuccess = true;
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.Result = users;
+            return Ok(_response);
         }
     }
 }

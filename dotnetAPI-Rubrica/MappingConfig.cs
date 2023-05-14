@@ -9,6 +9,7 @@ namespace dotnetAPI_Rubrica
         public MappingConfig()
         {
             CreateMap<ApplicationUser,UserDTO>().ReverseMap();
+            CreateMap<Contact, ContactCreateDTO>().ReverseMap();
         }
     }
 }

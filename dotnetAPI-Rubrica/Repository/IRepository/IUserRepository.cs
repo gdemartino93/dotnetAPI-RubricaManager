@@ -9,7 +9,6 @@ namespace dotnetAPI_Rubrica.Repository.IRepository
         bool IsUniqueEmail(string email);
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
         Task<UserDTO> Register(RegisterRequestDTO registerRequestDTO);
-        bool IsValidEmail(string email);
         Task<List<UserDTO>> GetAllUsers();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using dotnetAPI_Rubrica.Models.DTO;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotnetAPI_Rubrica.Models
@@ -19,7 +20,7 @@ namespace dotnetAPI_Rubrica.Models
 
         [ForeignKey("ApplicationUser")]
         public string UserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser User { get; set; }
         public string FullName()
         {
             return $"{Name} {Lastname}";

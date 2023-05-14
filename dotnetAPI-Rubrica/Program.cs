@@ -75,8 +75,9 @@ namespace dotnetAPI_Rubrica
 
             });
             //services entity
+            builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<IUserRepository,UserRepository>();
-            builder.Services.AddScoped<IContactRepository,ContactRepository>();
+            //builder.Services.AddScoped<IContactRepository,ContactRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

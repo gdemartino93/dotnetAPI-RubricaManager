@@ -4,6 +4,7 @@ using dotnetAPI_Rubrica.Models;
 using dotnetAPI_Rubrica.Models.DTO;
 using dotnetAPI_Rubrica.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -32,6 +33,7 @@ namespace dotnetAPI_Rubrica.Repository
             _userManager = userManager;
             _mapper = mapper;
         }
+
         public bool IsUniqueUser(string username)
         {
             var user = _dbContext.ApplicationUsers.FirstOrDefault(u => u.UserName == username);
@@ -143,18 +145,12 @@ namespace dotnetAPI_Rubrica.Repository
             }
         }
 
-        public bool IsValidEmail(string email)
+        public async Task<List<UserDTO>> GetAllUsers()
         {
-            // regex per validare l'email
-            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            Regex regex = new Regex(pattern);
-            return regex.IsMatch(email);
+            var users = await _dbContext.ApplicationUsers.ToListAsync();
+            return _mapper.Map<List<UserDTO>>(users);
         }
 
-        public Task<List<UserDTO>> GetAllUsers()
-        {
-            var user = _dbContext.ApplicationUsers.ToList();
-            return Task.FromResult(_mapper.Map<List<UserDTO>>(user));
-        }
+
     }
 }
