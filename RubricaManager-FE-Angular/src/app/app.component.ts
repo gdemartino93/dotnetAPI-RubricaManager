@@ -15,11 +15,7 @@ export class AppComponent {
   register(){
     this.auth.register(this.user).subscribe();
   }
-  login(user : User){
-    this.auth.login(user).subscribe((token) => {
-      localStorage.setItem("token", token.result.token);
-    });
-  }
+
 
 
 
