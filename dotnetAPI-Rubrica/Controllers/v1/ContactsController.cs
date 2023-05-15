@@ -85,8 +85,15 @@ namespace dotnetAPI_Rubrica.Controllers.v1
             try
             {
                 List<Contact> contacts = await _unitOfWork.Contacts.GetAllAsync(includeProperties: "User");
+                //mappiamo l'entità collegata in modo da visualizzare userdto
+                List<ContactDTO> contactDTOs = new List<ContactDTO>();
+                foreach(Contact contact in contacts)
+                {
+                    ContactDTO newcontact = _mapper.Map<ContactDTO>(contact);
+                    contactDTOs.Add(newcontact);
+                }
                 //se il count è 0 allora restituisco un messaggio
-                _response.Result = contacts.Count == 0 ? "Nessun risultato" : contacts;
+                _response.Result = contactDTOs.Count == 0 ? "Nessun risultato" : contactDTOs;
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 return Ok(_response);

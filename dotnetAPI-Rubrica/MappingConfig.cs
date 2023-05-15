@@ -11,6 +11,7 @@ namespace dotnetAPI_Rubrica
             CreateMap<ApplicationUser,UserDTO>().ReverseMap();
             CreateMap<Contact, ContactCreateDTO>().ReverseMap();
             CreateMap<Contact, ContactEditDTO>().ReverseMap();
+            CreateMap<ContactDTO, Contact>().ReverseMap();
         }
     }
 }
