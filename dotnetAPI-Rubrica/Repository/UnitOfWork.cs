@@ -1,4 +1,5 @@
-﻿using dotnetAPI_Rubrica.Data;
+﻿using AutoMapper;
+using dotnetAPI_Rubrica.Data;
 using dotnetAPI_Rubrica.Models;
 using dotnetAPI_Rubrica.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
@@ -8,20 +9,22 @@ namespace dotnetAPI_Rubrica.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDbContext _dbContext;
+
         public IContactRepository Contacts { get; private set; }
-        public UnitOfWork(ApplicationDbContext dbContext)
+        public IUserRepository Users { get; private set; }
+
+        public UnitOfWork(IContactRepository contactRepository,IUserRepository userRepository)
         {
-            _dbContext = dbContext;
-            Contacts = new ContactRepository(_dbContext);
+            Contacts = contactRepository;
+            Users = userRepository;
         }
         public void Dispose()
         {
-            _dbContext.Dispose();
+            Dispose();         
         }
         public void Save()
         {
-            _dbContext.SaveChanges();
+            Contacts.SaveAsync();
         }
     }
 }

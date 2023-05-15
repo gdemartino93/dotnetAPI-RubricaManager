@@ -14,11 +14,11 @@ namespace dotnetAPI_Rubrica.Controllers
     [ApiVersionNeutral]
     public class UsersController : Controller
     {
-        private readonly IUserRepository _userRepository;
         private APIResponse _response;
-        public UsersController(IUserRepository userRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public UsersController(IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
+           _unitOfWork = unitOfWork;
             _response = new APIResponse();
         }
 
@@ -27,7 +27,7 @@ namespace dotnetAPI_Rubrica.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
-            var loginRes = await _userRepository.Login(loginRequestDTO);
+            var loginRes = await _unitOfWork.Users.Login(loginRequestDTO);
             if (loginRes.User == null || string.IsNullOrEmpty(loginRes.Token))
             {
                 _response.IsSuccess = false;
@@ -64,8 +64,8 @@ namespace dotnetAPI_Rubrica.Controllers
                 return UnprocessableEntity(_response);
             }
             //check if username and email already exist
-            bool usernameExist = _userRepository.IsUniqueUser(registerRequestDTO.Username);
-            bool emailExist = _userRepository.IsUniqueEmail(registerRequestDTO.Email);
+            bool usernameExist = _unitOfWork.Users.IsUniqueUser(registerRequestDTO.Username);
+            bool emailExist = _unitOfWork.Users.IsUniqueEmail(registerRequestDTO.Email);
             //if already exist
             if (!usernameExist && !emailExist)
             {
@@ -76,7 +76,7 @@ namespace dotnetAPI_Rubrica.Controllers
 
             try
             {
-                var newUser = await _userRepository.Register(registerRequestDTO);
+                var newUser = await _unitOfWork.Users.Register(registerRequestDTO);
                 if (newUser is not null)
                 {
                     _response.IsSuccess = true;
@@ -100,7 +100,7 @@ namespace dotnetAPI_Rubrica.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllUsers()
         {
-             var users = await _userRepository.GetAllUsers();
+             var users = await _unitOfWork.Users.GetAllUsers();
             _response.IsSuccess = true;
             _response.StatusCode = HttpStatusCode.OK;
             _response.Result = users;

@@ -2,6 +2,7 @@
 using dotnetAPI_Rubrica.Models;
 using dotnetAPI_Rubrica.Models.DTO;
 using dotnetAPI_Rubrica.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel;
@@ -79,6 +80,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ResponseCache(Duration = 30)]
+        [Authorize(Roles ="admin")]
 
         public async Task<ActionResult<APIResponse>> GetContactsWithUser()
         {

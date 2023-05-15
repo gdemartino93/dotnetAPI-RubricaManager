@@ -27,7 +27,11 @@ namespace dotnetAPI_Rubrica
             //caching
             builder.Services.AddResponseCaching();
             //auth
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
+            {
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
             //api versioning
             builder.Services.AddApiVersioning(options =>
             {
@@ -76,9 +80,10 @@ namespace dotnetAPI_Rubrica
 
             });
             //services entity
-            builder.Services.AddTransient<IUnitOfWork,UnitOfWork>();
-            builder.Services.AddScoped<IUserRepository,UserRepository>();
-            //builder.Services.AddScoped<IContactRepository,ContactRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IContactRepository, ContactRepository>();
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
