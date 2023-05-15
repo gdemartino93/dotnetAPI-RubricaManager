@@ -104,7 +104,8 @@ namespace dotnetAPI_Rubrica
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
             var app = builder.Build();
-
+            app.UseCors(options =>
+                options.WithOrigins("*").AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

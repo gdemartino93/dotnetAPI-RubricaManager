@@ -42,16 +42,16 @@ namespace dotnetAPI_Rubrica.Repository
 
         }
 
-        public async Task<bool> Logout()
-        {
-            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
-            if(currentUser is null)
-            {
-                return false;
-            }
-            await _httpContextAccessor.HttpContext.SignOutAsync();
-            return true;
-        }
+        //public async Task<bool> Logout()
+        //{
+        //    var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+        //    if(currentUser is null)
+        //    {
+        //        return false;
+        //    }
+        //    await _httpContextAccessor.HttpContext.SignOutAsync();
+        //    return true;
+        //}
         public bool IsUniqueUser(string username)
         {
             var user = _dbContext.ApplicationUsers.FirstOrDefault(u => u.UserName == username);
@@ -167,6 +167,11 @@ namespace dotnetAPI_Rubrica.Repository
             return _mapper.Map<List<UserDTO>>(users);
         }
 
+        public async Task<UserDTO> GetMe()
+        {
+            UserDTO userDTO = null;
+            return userDTO;
+        }
 
 
     }
