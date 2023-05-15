@@ -292,13 +292,12 @@ namespace dotnetAPI_Rubrica.Controllers.v1
                     _response.ErrorMessage.Add("Contatto non trovato");
                     return BadRequest(_response);
                 }
-                contact = _mapper.Map<Contact>(dto);
+                _mapper.Map(dto,contact);
                 await _unitOfWork.Contacts.UpdateContact(contact);
-                //Errore nel salvataggio, da vedere come sistemare
                 _response.IsSuccess = true;
                 _response.StatusCode = HttpStatusCode.OK;
                 _response.Result = contact;
-                return Ok(_response);
+                 return Ok(_response);
             }
             catch (Exception)
             {

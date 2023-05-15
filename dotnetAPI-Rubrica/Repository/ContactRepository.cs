@@ -14,7 +14,7 @@ namespace dotnetAPI_Rubrica.Repository
         public async Task<Contact> UpdateContact(Contact contact)
         {
             contact.UpdatedAt = DateTime.Now;
-            _dbContact.Contacts.Update(contact);
+             _dbContact.Contacts.Update(contact);
             await _dbContact.SaveChangesAsync();
             return contact;
         }

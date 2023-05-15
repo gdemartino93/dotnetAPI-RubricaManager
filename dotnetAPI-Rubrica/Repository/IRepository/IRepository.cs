@@ -8,5 +8,6 @@ namespace dotnetAPI_Rubrica.Repository.IRepository
         Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, int pageSize = 0, int currentPage = 0);
         Task CreateAsync(T entity);
         Task DeleteAsync(T entity);
+        Task SaveAsync();
     }
 }

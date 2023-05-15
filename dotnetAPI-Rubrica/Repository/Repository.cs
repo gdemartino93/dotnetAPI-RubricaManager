@@ -75,5 +75,11 @@ namespace dotnetAPI_Rubrica.Repository
             return await query.FirstOrDefaultAsync();
         }
 
+        public Task SaveAsync()
+        {
+            return _db.SaveChangesAsync();
+        }
+
+
     }
 }
