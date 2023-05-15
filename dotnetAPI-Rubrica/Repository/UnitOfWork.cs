@@ -20,7 +20,7 @@ namespace dotnetAPI_Rubrica.Repository
         }
         public void Dispose()
         {
-            Dispose();         
+            //Dispose();         
         }
         public void Save()
         {

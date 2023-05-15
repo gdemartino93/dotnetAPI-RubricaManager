@@ -10,5 +10,6 @@ namespace dotnetAPI_Rubrica.Repository.IRepository
         Task<LoginResponseDTO> Login(LoginRequestDTO loginRequestDTO);
         Task<UserDTO> Register(RegisterRequestDTO registerRequestDTO);
         Task<List<UserDTO>> GetAllUsers();
+        Task<bool> Logout();
     }
 }

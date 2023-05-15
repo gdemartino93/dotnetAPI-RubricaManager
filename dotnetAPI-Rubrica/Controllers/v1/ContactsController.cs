@@ -80,8 +80,7 @@ namespace dotnetAPI_Rubrica.Controllers.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ResponseCache(Duration = 30)]
-        [Authorize(Roles ="admin")]
-
+        [Authorize(Roles = "user")]
         public async Task<ActionResult<APIResponse>> GetContactsWithUser()
         {
             try

@@ -13,6 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authentication;
 
 namespace dotnetAPI_Rubrica.Repository
 {
@@ -23,11 +24,13 @@ namespace dotnetAPI_Rubrica.Repository
         private RoleManager<IdentityRole> _roleManager;
         private UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UserRepository(ApplicationDbContext dbContext,
                               IConfiguration config,
                               RoleManager<IdentityRole> roleManager,
                               UserManager<ApplicationUser> userManager,
-                              IMapper mapper)
+                              IMapper mapper,
+                              IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
             secretKey = config.GetValue<string>("ApiSettings:secretKey");
@@ -35,8 +38,20 @@ namespace dotnetAPI_Rubrica.Repository
             _roleManager = roleManager;
             _userManager = userManager;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
+        public async Task<bool> Logout()
+        {
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            if(currentUser is null)
+            {
+                return false;
+            }
+            await _httpContextAccessor.HttpContext.SignOutAsync();
+            return true;
+        }
         public bool IsUniqueUser(string username)
         {
             var user = _dbContext.ApplicationUsers.FirstOrDefault(u => u.UserName == username);

@@ -42,6 +42,26 @@ namespace dotnetAPI_Rubrica.Controllers
 
             return Ok(_response);
         }
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout()
+        {
+           var res = await _unitOfWork.Users.Logout();
+            if (res)
+            {
+                _response.IsSuccess = true;
+                _response.Result = "Logout effettuato con successo";
+                _response.StatusCode=HttpStatusCode.OK;
+                return Ok(_response) ;
+            }
+            else
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.ErrorMessage.Add("C'è stato un problema durante il logout");
+                return BadRequest(_response) ;
+            }
+
+        }
         [HttpPost("Register")]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
