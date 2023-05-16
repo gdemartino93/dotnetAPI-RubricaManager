@@ -11,25 +11,28 @@
           </span>
           <input pInputText placeholder="Username" name="username" formControlName="username"/>
         </div>
-        <span class="text-wargning" *ngIf="form.get('username')?.invalid && form.get('username')?.touched">L'username è obbligatorio</span>
+        <span class="text-warning" *ngIf="form.get('username')?.invalid && form.get('username')?.touched">L'username è obbligatorio</span>
         <div class="p-inputgroup w-100">
           <span class="p-inputgroup-addon">
             <i class="bi bi-envelope"></i>
           </span>
           <input pInputText placeholder="Email" name="email" formControlName="email"/>
         </div>
+        <span class="text-warning" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">L'email è obbligatoria</span>
         <div class="p-inputgroup w-100">
           <span class="p-inputgroup-addon">
             <i class="bi bi-incognito"></i>
           </span>
           <input type="password" pInputText placeholder="Password" name="password" formControlName="password"/>
         </div>
+        <span class="text-warning" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">La password è obbligatoria</span>
         <div class="p-inputgroup w-100">
           <span class="p-inputgroup-addon">
             <i class="bi bi-incognito"></i>
           </span>
           <input type="password" pInputText placeholder="Conferma password"  name="confirmPassword" formControlName="confirmPassword"/>
         </div>
+        <span class="text-warning" *ngIf="form.get('confirmPassword')?.invalid && form.get('confirmPassword')?.touched">La password è obbligatoria</span>
         <div class="p-inputgroup w-100">
           <span class="p-inputgroup-addon">
             <i class="bi bi-person-vcard"></i>
@@ -42,7 +45,7 @@
           </span>
           <input pInputText placeholder="Cognome" name="lastname" formControlName="lastname"/>
         </div>
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-3 pb-3">
           <p-button label="Torna alla home" icon="pi pi-home" styleClass="p-button-warning" routerLink=""></p-button>
           <p-button label="Registrati" styleClass="p-button-warning" type="submit" [disabled]="form.invalid"></p-button>
         </div>
