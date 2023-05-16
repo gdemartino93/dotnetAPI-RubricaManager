@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { UserLoginDTO } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -11,7 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class LoginComponent {
 
   constructor(private auth : AuthService) { }
-  user: UserLoginDTO = new UserLoginDTO();
+  // user: UserLoginDTO = new UserLoginDTO();
 
   formLogin = new FormGroup(
     {
@@ -20,10 +19,10 @@ export class LoginComponent {
     }
   );
 
-  login(UserLoginDTO: UserLoginDTO){
-    this.auth.login(UserLoginDTO).subscribe((token) => {
-      localStorage.setItem('token', token.result.token);
-      console.log(localStorage.getItem('token'));
-    })
-  }
+  // login(UserLoginDTO: UserLoginDTO){
+  //   this.auth.login(UserLoginDTO).subscribe((token) => {
+  //     localStorage.setItem('token', token.result.token);
+  //     console.log(localStorage.getItem('token'));
+  //   })
+  // }
 }

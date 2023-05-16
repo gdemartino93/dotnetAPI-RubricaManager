@@ -4,45 +4,50 @@
     <p class="text-center text-warning">Inserisci le tue credenziali per accedere alla tua rubrica</p>
 
     <div class="col-12 col-md-8 col-lg-8 gap-3 d-flex flex-column my-5">
-      <div class="p-inputgroup w-100">
-        <span class="p-inputgroup-addon">
-          <i class="pi pi-user"></i>
-        </span>
-        <input pInputText placeholder="Username" [(ngModel)]="user.username" />
-      </div>
-      <div class="p-inputgroup w-100">
-        <span class="p-inputgroup-addon">
-          <i class="bi bi-envelope"></i>
-        </span>
-        <input pInputText placeholder="Email" [(ngModel)]="user.email" />
-      </div>
-      <div class="p-inputgroup w-100">
-        <span class="p-inputgroup-addon">
-          <i class="bi bi-incognito"></i>
-        </span>
-        <input type="password" pInputText placeholder="Password" [(ngModel)]="user.password"/>
-      </div>
-      <div class="p-inputgroup w-100">
-        <span class="p-inputgroup-addon">
-          <i class="bi bi-incognito"></i>
-        </span>
-        <input type="password" pInputText placeholder="Conferma password" [(ngModel)]="user.confirmPassword"/>
-      </div>
-      <div class="p-inputgroup w-100">
-        <span class="p-inputgroup-addon">
-          <i class="bi bi-person-vcard"></i>
-        </span>
-        <input pInputText placeholder="Nome" [(ngModel)]="user.name" />
-      </div>
-      <div class="p-inputgroup w-100">
-        <span class="p-inputgroup-addon">
-          <i class="bi bi-person-vcard"></i>
-        </span>
-        <input pInputText placeholder="Cognome" [(ngModel)]="user.lastname" />
-      </div>
-      <div class="d-flex gap-3">
-        <p-button label="Torna alla home" icon="pi pi-home" styleClass="p-button-warning" routerLink=""></p-button>
-        <p-button label="Registrati" styleClass="p-button-warning" (onClick)="register()"></p-button>
-      </div>
+      <form action="POST" [formGroup]="form" (ngSubmit)="onPost()" class="gap-2 d-flex flex-column">
+        <div class="p-inputgroup w-100">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-user"></i>
+          </span>
+          <input pInputText placeholder="Username" name="username" formControlName="username"/>
+        </div>
+        <span class="text-wargning" *ngIf="form.get('username')?.invalid && form.get('username')?.touched">L'username è obbligatorio</span>
+        <div class="p-inputgroup w-100">
+          <span class="p-inputgroup-addon">
+            <i class="bi bi-envelope"></i>
+          </span>
+          <input pInputText placeholder="Email" name="email" formControlName="email"/>
+        </div>
+        <div class="p-inputgroup w-100">
+          <span class="p-inputgroup-addon">
+            <i class="bi bi-incognito"></i>
+          </span>
+          <input type="password" pInputText placeholder="Password" name="password" formControlName="password"/>
+        </div>
+        <div class="p-inputgroup w-100">
+          <span class="p-inputgroup-addon">
+            <i class="bi bi-incognito"></i>
+          </span>
+          <input type="password" pInputText placeholder="Conferma password"  name="confirmPassword" formControlName="confirmPassword"/>
+        </div>
+        <div class="p-inputgroup w-100">
+          <span class="p-inputgroup-addon">
+            <i class="bi bi-person-vcard"></i>
+          </span>
+          <input pInputText placeholder="Nome" name="name" formControlName="name" formControlName="name"/>
+        </div>
+        <div class="p-inputgroup w-100">
+          <span class="p-inputgroup-addon">
+            <i class="bi bi-person-vcard"></i>
+          </span>
+          <input pInputText placeholder="Cognome" name="lastname" formControlName="lastname"/>
+        </div>
+        <div class="d-flex gap-3">
+          <p-button label="Torna alla home" icon="pi pi-home" styleClass="p-button-warning" routerLink=""></p-button>
+          <p-button label="Registrati" styleClass="p-button-warning" type="submit" [disabled]="form.invalid"></p-button>
+        </div>
+      </form>
+
   </div>
 </div>
+<!-- < -->

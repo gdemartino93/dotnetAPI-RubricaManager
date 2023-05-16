@@ -13,7 +13,7 @@ export class AppComponent {
   constructor(private auth : AuthService){}
 
   register(){
-    this.auth.register(this.user).subscribe();
+    // this.auth.register(this.user).subscribe();
   }
 
 

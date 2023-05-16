@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { UserRegisterDTO } from 'src/app/models/user';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -9,21 +8,35 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  constructor(private auth: AuthService) { }
+  constructor(private auth: AuthService, private fb : FormBuilder) { }
+  form! : FormGroup;
 
-  user : UserRegisterDTO = new UserRegisterDTO();
-  formRegister = new FormGroup(
-    {
-      username: new FormControl(''),
-      password: new FormControl(''),
-      confirmPassword: new FormControl(''),
-      email: new FormControl(''),
-      name: new FormControl(''),
-      lastname: new FormControl('')
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      'username' : ['',Validators.required],
+      'password' : ['',Validators.required],
+      'confirmPassword' : ['',Validators.required],
+      'email' : ['',Validators.required],
+      'name' : [''],
+      'lastname' : ['']
     });
-    register(){
-      this.auth.register(this.user).subscribe();
-    }
+  }
+  onPost(){
+    console.log(this.form.value);
+  }
+  // user : RegisterRequest = new UserRegisterDTO();
+  // formRegister = new FormGroup(
+  //   {
+  //     username: new FormControl(''),
+  //     password: new FormControl(''),
+  //     confirmPassword: new FormControl(''),
+  //     email: new FormControl(''),
+  //     name: new FormControl(''),
+  //     lastname: new FormControl('')
+  //   });
+  //   register(){
+  //     this.auth.register(this.user).subscribe();
+  //   }
 
 
 }
