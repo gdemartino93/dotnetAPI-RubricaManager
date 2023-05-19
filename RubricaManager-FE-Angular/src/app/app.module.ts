@@ -13,13 +13,15 @@ import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AddnewcontactComponent } from './pages/addnewcontact/addnewcontact.component';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegisterComponent,
     HeaderComponent,
-    HomeComponent
+    HomeComponent,
+    AddnewcontactComponent
   ],
   imports: [
     BrowserModule,

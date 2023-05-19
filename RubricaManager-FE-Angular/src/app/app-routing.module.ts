@@ -4,6 +4,8 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
+import { AddnewcontactComponent } from './pages/addnewcontact/addnewcontact.component';
+import { adminGuard } from './admin.guard';
 
 const routes: Routes = [
   {
@@ -17,6 +19,11 @@ const routes: Routes = [
   {
     path:'register',
     component: RegisterComponent
+  },
+  {
+    path : 'newcontact',
+    component: AddnewcontactComponent,
+    canActivate:[adminGuard]
   },
   {
     path: '**',
