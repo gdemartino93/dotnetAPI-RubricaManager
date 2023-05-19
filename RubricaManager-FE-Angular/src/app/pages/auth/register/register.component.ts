@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -8,7 +9,9 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
-  constructor(private auth: AuthService, private fb : FormBuilder) { }
+  constructor(private auth: AuthService,
+               private fb : FormBuilder,
+               private router :Router) { }
   form! : FormGroup;
 
   ngOnInit(): void {
@@ -21,22 +24,22 @@ export class RegisterComponent {
       'lastname' : ['']
     });
   }
-  onPost(){
-    console.log(this.form.value);
+  register() {
+    this.auth.register(this.form.value).subscribe(
+      response => {
+        console.log("Registrazione avvenuta con successo", response);
+        this.router.navigate(['']);
+
+      },
+      error => {
+        console.error("Errore durante la registrazione", error);
+
+
+      }
+    );
   }
-  // user : RegisterRequest = new UserRegisterDTO();
-  // formRegister = new FormGroup(
-  //   {
-  //     username: new FormControl(''),
-  //     password: new FormControl(''),
-  //     confirmPassword: new FormControl(''),
-  //     email: new FormControl(''),
-  //     name: new FormControl(''),
-  //     lastname: new FormControl('')
-  //   });
-  //   register(){
-  //     this.auth.register(this.user).subscribe();
-  //   }
+
+
 
 
 }

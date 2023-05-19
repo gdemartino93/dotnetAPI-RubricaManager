@@ -13,11 +13,11 @@ export class AuthService {
   private baseUrl = environment.baseUrl;
   constructor(private http : HttpClient) { }
 
-  public register(model: RegisterRequest){
-    return this.http.post(this.baseUrl + "Register", model)
+  public register(model: RegisterRequest): Observable<any> {
+    return this.http.post(this.baseUrl + "userauth/register", model);
   }
-  public login(model : LoginRequest){
-    return this.http.post<LoginResponse>(this.baseUrl + "Login", model)
+  public login(model : LoginRequest): Observable<any>{
+    return this.http.post<LoginResponse>(this.baseUrl + "userauth/login", model)
   }
 
 }
